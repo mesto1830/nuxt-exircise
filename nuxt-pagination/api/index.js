@@ -9,11 +9,13 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.post('/', async(req, res) => {
-  let page = req.body.query === '' ? 1 : req.body.query
-  let limit = 5
+  let page = req.body.page === '' ? 1 : req.body.page
+  let limit = 50
   const result = await Persons.find({},{_id:0}).limit(limit).skip((page-1) * limit)
-  res.json(result)
+  const length = await Persons.aggregate([{$count:'count'}])
+  res.json({result:result,length:length})
 })
+
 export default {
   path:'/api',
   handler: app

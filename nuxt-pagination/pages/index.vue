@@ -1,20 +1,32 @@
 <template>
   <div class="container">
     <h2>Nuxt Pagination</h2>
+    <ul class="pagination">
+      <li v-for="(page, index) in parseInt(pages)" :key="index">
+        <span @click="getNext(page)">{{ page }}</span>
+      </li>
+    </ul>
     <table>
       <thead>
         <tr class="table-header">
+          <th class="table-header-item">ID</th>
           <th class="table-header-item">Name</th>
           <th class="table-header-item">Gender</th>
           <th class="table-header-item">Country</th>
         </tr>
       </thead>
       <tr class="table-list" v-for="(item, index) in persons" :key="index">
+        <td class="table-list-item">{{ item.index }}</td>
         <td class="table-list-item">{{ item.name }}</td>
         <td class="table-list-item">{{ item.gender }}</td>
         <td class="table-list-item">{{ item.company.location.country }}</td>
       </tr>
     </table>
+    <ul class="pagination">
+      <li v-for="(page, index) in parseInt(pages)" :key="index">
+        <span @click="getNext(page)">{{ page }}</span>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -25,6 +37,7 @@ export default {
   data() {
     return {
       persons: {},
+      pages: 1,
     };
   },
   mounted() {
@@ -32,14 +45,18 @@ export default {
   },
   methods: {
     async connectNodejs() {
-      await axios
-        .post("/api", { query: this.$route.query.page })
-        .then((result) => {
-          console.log(result.data);
-          this.persons = result.data;
-        });
+      await axios.post("/api").then((result) => {
+        this.persons = result.data.result;
+        this.pages = result.data.length[0].count / 50
+      });
     },
-  },
+    async getNext(page = 1) {
+      await axios.post("/api", { page }).then((result) => {
+        this.persons = result.data.result;
+        window.scrollTo(0, 0);
+      });
+    }
+  }
 };
 </script>
 
