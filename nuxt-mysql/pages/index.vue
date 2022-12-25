@@ -3,8 +3,8 @@
     <h2>Main Page</h2>
     <ul>
       <li v-for="(user,index) in users" :key="index">
-        <span>{{user.user}}</span>
-        <span>{{user.credit}}</span>
+        <span>{{user.ID}}</span>
+        <span>{{user.name}}</span>
       </li>
     </ul>
   </div>
